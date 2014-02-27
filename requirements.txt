@@ -6,6 +6,3 @@ dj-static==0.0.5
 psycopg2==2.5.1
 wsgiref==0.1.2
 rest_framework_swagger
-gevent==1.0
-django_longpolling==0.1.2
-django-gevent-deploy=1.0.1
