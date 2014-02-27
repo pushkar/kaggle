@@ -1,0 +1,23 @@
+<p>Submit your predictions here</p>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'kaggle:submit' %}" method="post">
+{% csrf_token %}
+
+	{% if leaderboard %}
+	    <select name="student_id" id="student_id">
+	    {% for s in leaderboard %}
+			<option value="{{ s.id }}">{{ s.name }}</option>
+	    {% endfor %}
+	    </select>
+
+	    <input type="text" name="student_score" id="student_score" value="" />
+	    
+	    <input type="submit" value="Submit" />
+
+	{% else %}
+	    <p>No students are available.</p>
+	{% endif %}
+
+</form>

@@ -1,0 +1,14 @@
+<ul>
+<li><a href="form/">Form</a></li>
+<li><a href="cookie/">Cookies</a></li>
+</ul>
+
+{% if leaderboard %}
+    <ul>
+    {% for s in leaderboard %}
+        <li>{{ s.name }} - {{ s.score }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No students are available.</p>
+{% endif %}
