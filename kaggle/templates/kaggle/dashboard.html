@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Dashboard Template for Bootstrap</title>
+    <title>Project Meadow</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/static/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -36,7 +36,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Kaggle</a>
+          <a class="navbar-brand" href="#">Kaggle-like thing</a>
         </div>
         <div class="navbar-collapse collapse">
           <!--
@@ -52,30 +52,60 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="">Leaderboard</a></li>
-            <li><a href="form/">Submit Prediction</a></li>
+            {% if display == "leaderboard" %}
+            <li class="active">
+            {% else %}
+            <li>
+            {% endif %}
+            <a href="/kaggle/leaderboard/">Leaderboard</a>
+            </li>
+
+            {% if display == "form" %}
+            <li class="active">
+            {% else %}
+            <li>
+            {% endif %}
+            <a href="/kaggle/form/">Submit Prediction</a>
+            </li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Dashboard</h1>
           <!--
           <div class="row placeholders">
           </div>
           -->
-          <h2 class="sub-header">Supervised Learning</h2>
+          {% if display == "form" %}
+          <h3 class="sub-header">Submit your prediction</h3>
+          <form role="form" action="{% url 'kaggle:submit' %}" method="post">
+           <div class="form-group">
+            {% csrf_token %}
+              <select name="student_id" id="student_id">
+              {% for s in leaderboard %}
+              <option value="{{ s.id }}">{{ s.name }}</option>
+              {% endfor %}
+              </select>
+
+              <input type="text" name="student_score" id="student_score" value="" />
+              
+              <input type="submit" value="Submit" />
+            </div>
+          </form>
+
+
+          {% elif display == "leaderboard" %}
+          <h3 class="sub-header">Leaderboard</h3>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Name</th>
-                  <th>Score</th>
-                  <th>Location</th>
-                  <th>Last submission</th>
+                  <th><a href="/kaggle/leaderboard/name">Name</a></th>
+                  <th><a href="/kaggle/leaderboard/score">Score</a></th>
+                  <th><a href="/kaggle/leaderboard/location">Location</a></th>
+                  <th><a href="/kaggle/leaderboard/last">Last submission</a></th>
                 </tr>
               </thead>
               <tbody>
-                {% if leaderboard %}
                     {% for s in leaderboard %}
                       <tr>
                         <td>{{ s.id }}</td>
@@ -85,12 +115,10 @@
                         <td>{{ s.last_time }}</td>
                       </tr>
                     {% endfor %}
-                {% else %}
-                    <p>No students are available.</p>
-                {% endif %}
               </tbody>
             </table>
           </div>
+          {% endif %}
         </div>
       </div>
     </div>
