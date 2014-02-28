@@ -38,5 +38,10 @@ def submit(request):
 	s.save()
 	return HttpResponseRedirect(reverse('kaggle:leaderboard'))
 
-def cookie(request):
-	return HttpResponse("Hello, Cookie Page")
+def set_cookie(request):
+	response = HttpResponse("Hello, This is the Set Cookie Page")
+	response.set_cookie('logged_in_status', 'logged in')
+	return response
+
+def show_cookie(request):
+	return HttpResponse("Cookie is " + request.COOKIES.get('logged_in_status') )
