@@ -7,7 +7,7 @@ class Pages(models.Model):
 	content = models.TextField(max_length=5000)
 	
 	def __unicode__(self): 
-		return self.name
+		return self.title
 
 class Student(models.Model):
 	handle = models.CharField(max_length=50, primary_key=True)

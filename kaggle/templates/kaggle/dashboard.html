@@ -67,6 +67,17 @@
             {% endif %}
             <a href="/kaggle/form/">Submit Prediction</a>
             </li>
+
+            {% for p in pages %}
+              {% if display == "page" and page.handle == p.handle %}
+              <li class="active">
+              {% else %}
+              <li>
+              {% endif %}
+              <a href="/kaggle/pages/{{ p.handle }}">{{ p.title }}</a>
+              </li>
+            {% endfor %}
+
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -74,20 +85,26 @@
           <div class="row placeholders">
           </div>
           -->
-          {% if display == "form" %}
+          {% if display == "page" %}
+          <h3 class="sub-header">{{ page.title }}</h3>
+          {{ page.content|safe }}
+
+          {% elif display == "form" %}
           <h3 class="sub-header">Submit your prediction</h3>
           <form role="form" action="{% url 'kaggle:submit' %}" method="post">
            <div class="form-group">
             {% csrf_token %}
-              <select name="student_id" id="student_id">
+              <select name="student_id" id="student_id" class="form-control">
               {% for s in leaderboard %}
               <option value="{{ s.id }}">{{ s.name }}</option>
               {% endfor %}
               </select>
-
-              <input type="text" name="student_score" id="student_score" value="" />
+              <br />
               
-              <input type="submit" value="Submit" />
+              <textarea name="student_score" id="student_score" class="form-control" rows="10"></textarea>
+              <br />
+
+              <input type="submit" value="Submit" class="btn btn-primary" />
             </div>
           </form>
 

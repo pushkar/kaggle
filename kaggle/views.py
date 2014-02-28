@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
-from kaggle.models import Student
+from kaggle.models import Student, Pages
 from django.template import RequestContext, loader
 
 def leaderboard(request, order_by):
@@ -14,9 +14,11 @@ def leaderboard(request, order_by):
 		leaderboard = Student.objects.order_by('last_time')
 	else:
 		leaderboard = Student.objects.order_by('score')
-	output = ', '.join([p.name for p in leaderboard])
+
+	pages = Pages.objects.order_by('order')
 	template = loader.get_template('kaggle/dashboard.html')
 	context = RequestContext(request, {
+		'pages': pages,
         'leaderboard': leaderboard,
         'display': display
     })
@@ -25,9 +27,23 @@ def leaderboard(request, order_by):
 def form(request):
 	display = "form"
 	leaderboard = Student.objects.order_by('score')
+	pages = Pages.objects.order_by('order')
 	template = loader.get_template('kaggle/dashboard.html')
 	context = RequestContext(request, {
+		'pages': pages,
 		'leaderboard': leaderboard,
+        'display': display,
+    })
+	return HttpResponse(template.render(context))
+
+def page_view(request, page_id):
+	display = "page"
+	pages = Pages.objects.order_by('order')
+	page = Pages.objects.get(handle=page_id)
+	template = loader.get_template('kaggle/dashboard.html')
+	context = RequestContext(request, {
+		'page' : page,
+		'pages': pages,
         'display': display,
     })
 	return HttpResponse(template.render(context))
