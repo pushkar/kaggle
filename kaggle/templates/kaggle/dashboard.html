@@ -14,6 +14,13 @@
 
     <!-- Custom styles for this template -->
     <link href="/static/dashboard.css" rel="stylesheet">
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+    });
+    </script>
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -39,6 +46,9 @@
           <a class="navbar-brand" href="#">KungFudacity</a>
         </div>
         <div class="navbar-collapse collapse">
+         <ul class="nav navbar-nav navbar-right">
+            <li><a href="/kaggle/logout">Logout</a></li>
+          </ul>
           <!--
           <form class="navbar-form navbar-right">
             <input type="text" class="form-control" placeholder="Search...">
@@ -60,14 +70,7 @@
             <a href="/kaggle/leaderboard/">Leaderboard</a>
             </li>
 
-            {% if display == "form" %}
-            <li class="active">
-            {% else %}
-            <li>
-            {% endif %}
-            <a href="/kaggle/form/">Submit Prediction</a>
-            </li>
-
+            
             {% for p in pages %}
               {% if display == "page" and page.handle == p.handle %}
               <li class="active">
@@ -78,6 +81,13 @@
               </li>
             {% endfor %}
 
+            {% if display == "form" %}
+            <li class="active">
+            {% else %}
+            <li>
+            {% endif %}
+            <a href="/kaggle/form/">Submit Prediction</a>
+            </li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -94,11 +104,6 @@
           <form role="form" action="{% url 'kaggle:submit' %}" method="post">
            <div class="form-group">
             {% csrf_token %}
-              <select name="student_id" id="student_id" class="form-control">
-              {% for s in leaderboard %}
-              <option value="{{ s.id }}">{{ s.name }}</option>
-              {% endfor %}
-              </select>
               <br />
               
               <textarea name="student_score" id="student_score" class="form-control" rows="10"></textarea>
@@ -125,7 +130,11 @@
               </thead>
               <tbody>
                     {% for s in leaderboard %}
+                      {% if s.handle == handle %}
+                      <tr style="background-color: #F1F1F1;">
+                      {% else %}
                       <tr>
+                      {% endif %}
                         <td>{{ s.id }}</td>
                         <td>{{ s.name }}</td>
                         <td>{{ s.score }}</td>

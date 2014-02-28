@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 class Pages(models.Model):
 	handle = models.CharField(max_length=10, primary_key=True)
@@ -15,7 +16,7 @@ class Student(models.Model):
 	location = models.CharField(max_length=50)
 	age = models.IntegerField(default=0)
 	score = models.FloatField(default=0.0)
-	last_time = models.DateTimeField()
+	last_time = models.DateTimeField(auto_now_add=True, blank=True)
 
 	def __unicode__(self): 
 		return self.name

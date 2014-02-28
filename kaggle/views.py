@@ -4,6 +4,30 @@ from django.core.urlresolvers import reverse
 from kaggle.models import Student, Pages
 from django.template import RequestContext, loader
 
+def index(request):
+	display = "signin"
+	template = loader.get_template('kaggle/signin.html')
+	context = RequestContext(request, {
+	    'display': display
+	})
+	return HttpResponse(template.render(context))
+
+def signin(request):
+	try:
+		s = Student.objects.get(handle=request.POST['handle_id'])
+	except:
+		s = Student(handle=request.POST['handle_id'])
+		s.save()
+	request.session['handle_id'] = s.handle
+	return HttpResponseRedirect(reverse('kaggle:form'))
+
+def logout(request):
+	try:
+		del request.session['handle_id']
+	except KeyError:
+		pass
+	return HttpResponseRedirect(reverse('kaggle:index'))
+
 def leaderboard(request, order_by):
 	display = "leaderboard"
 	if order_by == "name":
@@ -15,9 +39,11 @@ def leaderboard(request, order_by):
 	else:
 		leaderboard = Student.objects.order_by('score')
 
+	handle = request.session['handle_id']
 	pages = Pages.objects.order_by('order')
 	template = loader.get_template('kaggle/dashboard.html')
 	context = RequestContext(request, {
+		'handle': handle,
 		'pages': pages,
         'leaderboard': leaderboard,
         'display': display
